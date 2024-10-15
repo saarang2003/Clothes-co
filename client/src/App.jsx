@@ -22,7 +22,7 @@ import { Skeleton } from "./components/ui/skeleton";
 
 function App() {
 
-  const {isAuthenticated,isLoading , user} = useSelector((state) =>state.auth)
+  const {isAuthenticated,isLoading , user} = useSelector((state) =>state.auth);
 
   const dispatch = useDispatch();
 

@@ -40,7 +40,15 @@ function CommonForm({
 
     const selectField = () => {
       return (
-        <Select>
+        <Select
+          value={value}
+          onValueChange={(selectedValue) =>
+            setFormData({
+              ...formData,
+              [getControlItem.name]: selectedValue,
+            })
+          }
+        >
           <SelectTrigger>
             <SelectValue placeholder={getControlItem.placeholder} />
           </SelectTrigger>
@@ -55,7 +63,6 @@ function CommonForm({
       );
     };
     
-
     const textareaField = () => (
       <Textarea
         name={getControlItem.name}
