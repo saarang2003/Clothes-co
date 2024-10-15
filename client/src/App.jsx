@@ -21,48 +21,57 @@ import { checkAuth } from "./store/auth-slice";
 import { Skeleton } from "./components/ui/skeleton";
 
 function App() {
-
-  const {isAuthenticated,isLoading , user} = useSelector((state) =>state.auth);
+  const { isAuthenticated, isLoading, user } = useSelector(
+    (state) => state.auth
+  );
 
   const dispatch = useDispatch();
 
-  useEffect(()=>{
+  useEffect(() => {
     dispatch(checkAuth());
-  }, [dispatch])
+  }, [dispatch]);
 
-  if (isLoading) return <Skeleton className="w-[800] bg-black h-[600px]" />;
-  
+  if (isLoading) return <Skeleton className="w-[800] bg-black h-[200px]" />;
 
   return (
     <div className="flex flex-col overflow-hidden bg-white">
       <Routes>
         <Route path="/" element={<Navigate to="/auth/register" replace />} />
 
-        <Route path="/admin" element={
-          <CheckAuth isAuthenticated={isAuthenticated} user={user} >
-            <AdminLayout />
-          </CheckAuth>
-          }>
+        <Route
+          path="/admin"
+          element={
+            <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+              <AdminLayout />
+            </CheckAuth>
+          }
+        >
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="products" element={<AdminProducts />} />
           <Route path="orders" element={<AdminOrder />} />
           <Route path="features" element={<AdminFeature />} />
         </Route>
 
-        <Route path="/auth" element={
-          <CheckAuth  isAuthenticated={isAuthenticated} user={user} >
-            <AuthLayout />
-          </CheckAuth>
-          }>
+        <Route
+          path="/auth"
+          element={
+            <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+              <AuthLayout />
+            </CheckAuth>
+          }
+        >
           <Route path="login" element={<AuthLogin />} />
           <Route path="register" element={<AuthRegister />} />
         </Route>
 
-        <Route path="/shop" element={
-          <CheckAuth  isAuthenticated={isAuthenticated} user={user} >
-          <ShoppingLayout />
-        </CheckAuth>
-        }>
+        <Route
+          path="/shop"
+          element={
+            <CheckAuth isAuthenticated={isAuthenticated} user={user}>
+              <ShoppingLayout />
+            </CheckAuth>
+          }
+        >
           <Route path="account" element={<ShoppingAccount />} />
           <Route path="checkout" element={<ShoppingCheckout />} />
           <Route path="home" element={<ShoppingHome />} />
