@@ -2,7 +2,9 @@ import React from 'react'
 
 function UserCartWrapper() {
   return (
-    <div>UserCartWrapper</div>
+    <div>
+      
+    </div>
   )
 }
 

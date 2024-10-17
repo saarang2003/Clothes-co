@@ -32,32 +32,43 @@ function AdminProducts() {
   const { productList } = useSelector((state) => state.adminProducts);
   const dispatch = useDispatch();
   const { toast } = useToast();
+  console.log(productList , " this is ")
 
-  function onSubmit(e) {
-    e.preventDefault();
+  function onSubmit(event) {
+    event.preventDefault();
 
-    if (currentEditedId != null) {
-      dispatch(editProduct({ id: currentEditedId, formData }))
-        .then((data) => {
+    currentEditedId !== null
+      ? dispatch(
+          editProduct({
+            id: currentEditedId,
+            formData,
+          })
+        ).then((data) => {
+          console.log(data, "edit");
+
           if (data?.payload?.success) {
             dispatch(fetchAllProducts());
-            setFormData(initialState);
+            setFormData(initialFormData);
             setOpenCreateProductsDialog(false);
             setCurrentEditedId(null);
           }
-        });
-    } else {
-      dispatch(addProduct({ ...formData, image: uploadedImageUrl }))
-        .then((data) => {
+        })
+      : dispatch(
+          addProduct({
+            ...formData,
+            image: uploadedImageUrl,
+          })
+        ).then((data) => {
           if (data?.payload?.success) {
             dispatch(fetchAllProducts());
             setOpenCreateProductsDialog(false);
             setImageFile(null);
-            setFormData(initialState);
-            toast({ title: "Product added successfully" });
+            setFormData(initialFormData);
+            toast({
+              title: "Product add successfully",
+            });
           }
         });
-    }
   }
 
   function handleDelete(getCurrentProductId) {
@@ -87,7 +98,7 @@ function AdminProducts() {
       <div className="grid gap-4 border border-green-700 md:grid-cols-3 lg:grid-cols-4">
         {productList && productList.length > 0 ? productList.map((productItem) => (
           <AdminProductTile
-            key={productItem.id}
+            key={productItem._id}
             setFormData={setFormData}
             setOpenCreateProductsDialog={setOpenCreateProductsDialog}
             setCurrentEditedId={setCurrentEditedId}
@@ -97,14 +108,12 @@ function AdminProducts() {
         )) : null}
       </div>
 
-      <Sheet 
+      <Sheet
         open={openCreateProductsDialog}
-        onOpenChange={(open) => {
-          setOpenCreateProductsDialog(open);
-          if (!open) {
-            setCurrentEditedId(null);
-            setFormData(initialState);
-          }
+        onOpenChange={() => {
+          setOpenCreateProductsDialog(false);
+          setCurrentEditedId(null);
+          setFormData(initialFormData);
         }}
       >
         <SheetContent side="right" className="overflow-y-scroll">

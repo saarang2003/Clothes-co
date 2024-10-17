@@ -17,6 +17,7 @@ function ProductImageUpload({
   isEditMode,
   isCustomStyling = false,
 }) {
+  
   const inputRef = useRef(null);
 
   console.log(isEditMode, "isEditMode");

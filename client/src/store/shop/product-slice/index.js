@@ -8,26 +8,43 @@ const initialState = {
     productDetails: null,
 }
 
+
 export const fetchAllFilteredProducts = createAsyncThunk(
-    "/products/fetchAllProducts",
-    async({filterParams, searchParams})=>{
-        console.log(fetchAllFilteredProducts, "fetchAllFilteredProducts");
-
-        const query = new URLSearchParams({
-            ...filterParams,
-            sortBy: sortParams,
-          });
-
-          
-          const result = await axios.get(
-            `http://localhost:5000/api/shop/products/get?${query}`
-          );
+  "/products/fetchAllProducts",
+  async ({ filterParams, sortParams }) => {
+    try {
+      // Create query parameters
+      const queryParams = new URLSearchParams();
       
-          console.log(result);
+      // Add filter parameters if they exist
+      if (filterParams) {
+        Object.entries(filterParams).forEach(([key, value]) => {
+          if (Array.isArray(value) && value.length > 0) {
+            queryParams.append(key, value.join(','));
+          }
+        });
+      }
       
-          return result?.data;
+      // Add sort parameter
+      if (sortParams) {
+        queryParams.append('sortBy', sortParams);
+      }
+
+      console.log('Request URL:', `http://localhost:5000/api/shop/products/get?${queryParams}`);
+      
+      const result = await axios.get(
+        `http://localhost:5000/api/shop/products/get?${queryParams}`
+      );
+
+      console.log('API Response:', result.data);
+      
+      return result?.data;
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      throw error;
     }
-)
+  }
+);   
 
 export const fetchProductDetails = createAsyncThunk(
     "/products/fetchProductDetails",

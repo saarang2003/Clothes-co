@@ -84,7 +84,7 @@ function HeaderRightContent() {
     dispatch(fetchCartItems(user?.id));
   }, [dispatch]);
 
-  console.log(cartItems, "sangam");
+  console.log(user, "sangam");
 
   return (
     <div className="flex lg:items-center lg:flex-row flex-col gap-4">
@@ -115,7 +115,7 @@ function HeaderRightContent() {
         <DropdownMenuTrigger asChild>
           <Avatar className="bg-black">
             <AvatarFallback className="bg-black text-white font-extrabold">
-              {user?.username[0].toUpperCase()}
+              {user?.username[0].toUpperCase()}    
             </AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
@@ -123,7 +123,8 @@ function HeaderRightContent() {
           <DropdownMenuLabel>Logged in as {user?.userName}</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => navigate("/shop/account")}>
-            <UserCog onClick={() => navigate("/shop/account")} /> Account
+            <UserCog className="mr-2 h-4 w-4" />
+            Account
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={handleLogout}>
@@ -149,7 +150,6 @@ function ShoppingHeader() {
           <SheetTrigger asChild>
             <Button variant="outline" size="icon" className="lg:hidden">
               <Menu className="h-6 w-6" />
-              <span className="sr-only">Toggle header menu</span>
             </Button>
           </SheetTrigger>
 
@@ -158,6 +158,7 @@ function ShoppingHeader() {
             <HeaderRightContent />
           </SheetContent>
         </Sheet>
+
         <div className="hidden lg:block">
           <MenuItem />
         </div>

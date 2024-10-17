@@ -11,6 +11,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ArrowUpDownIcon } from "lucide-react";
@@ -19,6 +20,25 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
+
+
+function createSearchParamsHelper(filterParams) {
+  const queryParams = [];
+  for (const [key, value] of Object.entries(filterParams)) {
+    if (Array.isArray(value) && value.length > 0) {
+      const paramValue = value.join(",");
+
+      queryParams.push(`${key}=${encodeURIComponent(paramValue)}`);
+    }
+  }
+
+  console.log(queryParams, "queryParams");
+
+  return queryParams.join("&");
+}
+
+
+
 
 function ShoppingListing() {
   const dispatch = useDispatch();
@@ -35,20 +55,8 @@ function ShoppingListing() {
 
   const categorySearchParam = searchParams.get("category");
 
-  function createSearchParamsHelper(filterParams) {
-    const queryParams = [];
-    for (const [key, value] of Object.entries(filterParams)) {
-      if (Array.isArray(value) && value.length > 0) {
-        const paramValue = value.join(",");
-
-        queryParams.push(`${key}=${encodeURIComponent(paramValue)}`);
-      }
-    }
-
-    console.log(queryParams, "queryParams");
-
-    return queryParams.join("&");
-  }
+  console.log(productList , "Product List is");
+  
 
   function handleFilter(getSectionId, getCurrentOption) {
     let cpyFilters = { ...filters };
@@ -115,6 +123,11 @@ function ShoppingListing() {
     });
   }
 
+  console.log('Filters:', filters);
+console.log('Sort:', sort);
+console.log('Product List:', productList);
+
+
   useEffect(() => {
     setSort("price-lowtohigh");
     setFilters(JSON.parse(sessionStorage.getItem("filters")) || {});
@@ -128,10 +141,16 @@ function ShoppingListing() {
   }, [filters]);
 
   useEffect(() => {
-    if (filters !== null && sort !== null)
+    if (filters !== null && sort !== null) {
+      console.log('Dispatching fetchAllFilteredProducts with:', { filters, sort });
       dispatch(
         fetchAllFilteredProducts({ filterParams: filters, sortParams: sort })
-      );
+      ).then(result => {
+        console.log('Fetch result:', result);
+      }).catch(error => {
+        console.error('Fetch error:', error);
+      });
+    }
   }, [dispatch, sort, filters]);
 
   useEffect(() => {
@@ -141,11 +160,11 @@ function ShoppingListing() {
   console.log(productList, "productListproductListproductList");
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[200_1fr] gap-6 p-4 md:p-6">
-      <ProductFilter />
+    <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 p-4 md:p-6">
+      <ProductFilter filters={filters} handleFilter={handleFilter} />
       <div className="bg-background w-full rounded-lg shadow-sm">
         <div className="p-4 border-b flex items-center justify-between">
-          <h2 className="text-lg font-extrabold">All product</h2>
+          <h2 className="text-lg font-extrabold">All Products</h2>
           <div className="flex items-center gap-3">
             <span className="text-muted-foreground">
               {productList?.length} Products
@@ -153,31 +172,29 @@ function ShoppingListing() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
-                  className="flex items-center gap-1"
                   variant="outline"
                   size="sm"
+                  className="flex items-center gap-1"
                 >
-                  {" "}
-                  <ArrowUpDownIcon className="h-4 w-4" /> <span>Sort by</span>
+                  <ArrowUpDownIcon className="h-4 w-4" />
+                  <span>Sort by</span>
                 </Button>
               </DropdownMenuTrigger>
-
               <DropdownMenuContent align="end" className="w-[200px]">
                 <DropdownMenuRadioGroup value={sort} onValueChange={handleSort}>
                   {sortOptions.map((sortItem) => (
-                    <DropdownMenuRadioGroup
+                    <DropdownMenuRadioItem
                       value={sortItem.id}
                       key={sortItem.id}
                     >
                       {sortItem.label}
-                    </DropdownMenuRadioGroup>
+                    </DropdownMenuRadioItem>
                   ))}
                 </DropdownMenuRadioGroup>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
         </div>
-
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
           {productList && productList.length > 0
             ? productList.map((productItem) => (
