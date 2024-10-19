@@ -123,6 +123,9 @@ function ShoppingHome() {
 
   console.log(featureImageList , "thisbd csnweksvnwsv");
 
+  console.log(categoriesWithIcon, "categewefwef")
+
+
 
     return (
       <div className="flex flex-col min-h-screen">
@@ -179,6 +182,7 @@ function ShoppingHome() {
                 onClick={() =>
                   handleNavigateToListingPage(categoryItem, "category")
                 }
+                key={categoryItem.id}
                 className="cursor-pointer hover:shadow-lg transition-shadow"
               >
                 <CardContent className="flex flex-col items-center justify-center p-6">
@@ -199,6 +203,7 @@ function ShoppingHome() {
               <Card
                 onClick={() => handleNavigateToListingPage(brandItem, "brand")}
                 className="cursor-pointer hover:shadow-lg transition-shadow"
+                key={brandItem.id}
               >
                 <CardContent className="flex flex-col items-center justify-center p-6">
                   <brandItem.icon className="w-12 h-12 mb-4 text-primary" />
@@ -219,6 +224,7 @@ function ShoppingHome() {
             {productList && productList.length > 0
               ? productList.map((productItem) => (
                   <ShoppingProductTile
+                  key={productItem._id}
                     handleGetProductDetails={handleGetProductDetails}
                     product={productItem}
                     handleAddtoCart={handleAddtoCart}

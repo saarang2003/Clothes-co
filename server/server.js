@@ -7,6 +7,7 @@ const shopProductsRouter = require("./routes/shop/product-routes");
 const shopCartRouter = require("./routes/shop/cart-routes");
 const shopReviewRouter = require('./routes/shop/review-routes')
 const commonFeatureRouter = require("./routes/common/feature-routes");
+const shopAddressRouter = require('./routes/shop/address-routes');
 
 const cors = require("cors");
 const app = express();
@@ -38,6 +39,7 @@ app.use("/api/admin/products", adminProductsRouter);
 app.use("/api/shop/products", shopProductsRouter);
 app.use("/api/shop/cart", shopCartRouter);
 app.use("/api/shop/review", shopReviewRouter);
+app.use('/api/shop/address' , shopAddressRouter);
 
 app.use("/api/common/feature", commonFeatureRouter);
 

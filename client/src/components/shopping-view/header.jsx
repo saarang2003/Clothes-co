@@ -59,7 +59,7 @@ function MenuItem() {
       {shoppingViewHeaderMenuItems.map((menuItem) => (
         <Label
           onClick={() => handleNavigate(menuItem)}
-          className="text-sm font-medium cursor-pointer"
+          className="text-sm font-medium cursor-pointer hover:text-primary transition-colors"
           key={menuItem.id}
         >
           {menuItem.label}
@@ -81,46 +81,45 @@ function HeaderRightContent() {
   }
 
   useEffect(() => {
-    dispatch(fetchCartItems(user?.id));
-  }, [dispatch]);
-
-  console.log(user, "sangam");
+    if (user?.id) {
+      dispatch(fetchCartItems(user.id));
+    }
+  }, [dispatch, user?.id]);
 
   return (
     <div className="flex lg:items-center lg:flex-row flex-col gap-4">
-      <Sheet open={openCartSheet} onOpenChange={() => setOpenCartSheet(false)}>
-        <Button
-          onClick={() => setOpenCartSheet(true)}
-          variant="outline"
-          size="icon"
-          className="relative"
-        >
-          <ShoppingCartIcon className="w-6 h-6" />
-          <span className="absolute top-[-5px] right-[2px] font-bold text-sm">
-            {cartItems?.items?.length || 0}
-          </span>
-          <span className="sr-only">User cart</span>
-        </Button>
-        <UserCartWrapper
-          setOpenCartSheet={setOpenCartSheet}
-          cartItems={
-            cartItems && cartItems.items && cartItems.items.length > 0
-              ? cartItems.items
-              : []
-          }
-        />
+      <Sheet open={openCartSheet} onOpenChange={setOpenCartSheet}>
+        <SheetTrigger asChild>
+          <Button
+            variant="outline"
+            size="icon"
+            className="relative"
+          >
+            <ShoppingCartIcon className="w-6 h-6" />
+            <span className="absolute top-[-5px] right-[2px] font-bold text-sm">
+              {cartItems?.items?.length || 0}
+            </span>
+            <span className="sr-only">User cart</span>
+          </Button>
+        </SheetTrigger>
+        <SheetContent>
+          <UserCartWrapper
+            setOpenCartSheet={setOpenCartSheet}
+            cartItems={cartItems?.items || []}
+          />
+        </SheetContent>
       </Sheet>
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Avatar className="bg-black">
+          <Avatar className="bg-black cursor-pointer">
             <AvatarFallback className="bg-black text-white font-extrabold">
-              {user?.username[0].toUpperCase()}    
+              {user?.username?.[0]?.toUpperCase() || 'U'}
             </AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent side="right" className="w-56">
-          <DropdownMenuLabel>Logged in as {user?.userName}</DropdownMenuLabel>
+          <DropdownMenuLabel>Logged in as {user?.username}</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => navigate("/shop/account")}>
             <UserCog className="mr-2 h-4 w-4" />
@@ -140,31 +139,34 @@ function ShoppingHeader() {
   const { isAuthenticated } = useSelector((state) => state.auth);
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b bg-background ">
-      <div className="flex h-16 items-center justify-between px-4 md:px-6">
-        <Link to="/shop/home" className="flex items-center gap-2">
-          <HousePlug className="h-6 w-6" />
-          <span className="font-bold">Ecom  merce</span>
-        </Link>
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button variant="outline" size="icon" className="lg:hidden">
-              <Menu className="h-6 w-6" />
-            </Button>
-          </SheetTrigger>
-
-          <SheetContent side="left" className="w-full max-w-xs">
+    <header className="sticky top-0 z-40 w-full border-b bg-background">
+      <div className="container mx-auto">
+        <div className="flex h-16 items-center justify-between px-4 md:px-6">
+          <Link to="/shop/home" className="flex items-center gap-2">
+            <HousePlug className="h-6 w-6" />
+            <span className="font-bold">Ecommerce</span>
+          </Link>
+          
+          <div className="hidden lg:block">
             <MenuItem />
-            <HeaderRightContent />
-          </SheetContent>
-        </Sheet>
+          </div>
 
-        <div className="hidden lg:block">
-          <MenuItem />
-        </div>
+          <div className="hidden lg:block">
+            {isAuthenticated && <HeaderRightContent />}
+          </div>
 
-        <div className="hidden lg:block">
-          <HeaderRightContent />
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="icon" className="lg:hidden">
+                <Menu className="h-6 w-6" />
+              </Button>
+            </SheetTrigger>
+
+            <SheetContent side="left" className="w-full max-w-xs">
+              <MenuItem />
+              {isAuthenticated && <HeaderRightContent />}
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
     </header>
