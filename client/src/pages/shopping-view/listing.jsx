@@ -87,7 +87,7 @@ function ShoppingListing() {
     dispatch(fetchProductDetails(getCurrentProductId));
   }
 
-  function handleAddToCart(getCurrentProductId, getTotalStock) {
+  function handleAddtoCart(getCurrentProductId, getTotalStock) {
     console.log(cartItems);
     let getCartItems = cartItems.items || [];
     if (getCartItems.length) {
@@ -199,9 +199,10 @@ console.log('Product List:', productList);
           {productList && productList.length > 0
             ? productList.map((productItem) => (
                 <ShoppingProductTile
+                  key={productItem._id}
                   handleGetProductDetails={handleGetProductDetails}
                   product={productItem}
-                  handleAddToCart={handleAddToCart}
+                  handleAddtoCart={handleAddtoCart}
                 />
               ))
             : null}
